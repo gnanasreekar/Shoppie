@@ -1,0 +1,206 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+---
+
+<header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+      
+      <!-- Brand & Locality -->
+      <div class="flex items-center gap-4 sm:gap-6">
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition">
+            S
+          </div>
+          <div class="flex flex-col">
+            <span class="text-2xl font-black tracking-tight text-slate-900 group-hover:text-brand-600 transition">
+              Shoppie<span class="text-brand-600">.</span>
+            </span>
+            <span class="text-[10px] font-medium text-slate-500 -mt-1 tracking-wider uppercase">Local Commerce</span>
+          </div>
+        </a>
+
+        <!-- Locality Selector Dropdown -->
+        <div class="relative hidden md:block">
+          <button 
+            id="locality-btn"
+            class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full transition"
+            title="Choose delivery locality"
+          >
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Delivery to:</span>
+            <span id="current-locality-label" class="font-bold text-slate-900">Varni (503201)</span>
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- Locality dropdown menu -->
+          <div id="locality-menu" class="hidden absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
+            <div class="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Telangana Localities</div>
+            <button class="locality-option w-full px-4 py-2 text-left text-xs font-medium hover:bg-orange-50 text-slate-800 flex justify-between items-center" data-locality="Varni (503201)">
+              <span>Varni Town</span>
+              <span class="text-slate-400">503201</span>
+            </button>
+            <button class="locality-option w-full px-4 py-2 text-left text-xs font-medium hover:bg-orange-50 text-slate-800 flex justify-between items-center" data-locality="Nizamabad City (503001)">
+              <span>Nizamabad City</span>
+              <span class="text-slate-400">503001</span>
+            </button>
+            <button class="locality-option w-full px-4 py-2 text-left text-xs font-medium hover:bg-orange-50 text-slate-800 flex justify-between items-center" data-locality="Armoor (503224)">
+              <span>Armoor</span>
+              <span class="text-slate-400">503224</span>
+            </button>
+            <button class="locality-option w-full px-4 py-2 text-left text-xs font-medium hover:bg-orange-50 text-slate-800 flex justify-between items-center" data-locality="Bodhan (503185)">
+              <span>Bodhan</span>
+              <span class="text-slate-400">503185</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="hidden lg:flex flex-1 max-w-md mx-4">
+        <div class="relative w-full">
+          <input 
+            type="text" 
+            placeholder="Search groceries, atta, mobiles, fresh veggies..." 
+            class="w-full bg-slate-100 border-none rounded-full py-2.5 pl-10 pr-4 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-brand-500 transition shadow-inner"
+          />
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation links & Actions -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+          <a 
+            href="/" 
+            class={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${currentPath === '/' ? 'text-brand-600 bg-orange-50' : 'text-slate-600 hover:text-slate-900'}`}
+          >
+            Marketplace
+          </a>
+          <a 
+            href="/stores" 
+            class={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${currentPath.startsWith('/stores') ? 'text-brand-600 bg-orange-50' : 'text-slate-600 hover:text-slate-900'}`}
+          >
+            Stores
+          </a>
+          <a 
+            href="/pricing" 
+            class={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${currentPath === '/pricing' ? 'text-brand-600 bg-orange-50' : 'text-slate-600 hover:text-slate-900'}`}
+          >
+            SaaS Plans
+          </a>
+          <a 
+            href="/merchant" 
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition flex items-center gap-1"
+          >
+            <span>Merchant Portal</span>
+            <span class="text-[10px] bg-brand-100 text-brand-800 font-bold px-1.5 py-0.5 rounded">SaaS</span>
+          </a>
+        </nav>
+
+        <!-- AI Assistant Quick Trigger Button -->
+        <a 
+          href="/ai-assistant"
+          class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-semibold hover:shadow-md hover:from-violet-700 hover:to-indigo-700 transition"
+          title="Open AI Shopping & Business Assistant"
+        >
+          <svg class="w-3.5 h-3.5 animate-spin" style="animation-duration: 4s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="hidden sm:inline">AI Copilot</span>
+          <span class="sm:hidden">AI</span>
+        </a>
+
+        <!-- Cart Trigger Button with Reactive Badge -->
+        <button 
+          id="cart-drawer-btn"
+          class="relative p-2.5 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-brand-600 transition text-slate-700"
+          aria-label="View Shopping Cart"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span 
+            id="cart-badge-count" 
+            class="hidden absolute -top-1 -right-1 w-5 h-5 bg-brand-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white"
+          >
+            0
+          </span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Locality dropdown interaction
+  const localityBtn = document.getElementById('locality-btn');
+  const localityMenu = document.getElementById('locality-menu');
+  const localityLabel = document.getElementById('current-locality-label');
+
+  if (localityBtn && localityMenu && localityLabel) {
+    localityBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      localityMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+      localityMenu.classList.add('hidden');
+    });
+
+    document.querySelectorAll('.locality-option').forEach((opt) => {
+      opt.addEventListener('click', (e) => {
+        const val = (e.currentTarget as HTMLElement).getAttribute('data-locality');
+        if (val) {
+          localityLabel.textContent = val;
+          localStorage.setItem('shoppie_locality', val);
+        }
+        localityMenu.classList.add('hidden');
+      });
+    });
+
+    const savedLocality = localStorage.getItem('shoppie_locality');
+    if (savedLocality) {
+      localityLabel.textContent = savedLocality;
+    }
+  }
+
+  // Update cart badge dynamically
+  function updateCartBadge() {
+    try {
+      const raw = localStorage.getItem('shoppie_cart_v1');
+      const badge = document.getElementById('cart-badge-count');
+      if (!badge) return;
+
+      if (!raw) {
+        badge.classList.add('hidden');
+        return;
+      }
+      const cart = JSON.parse(raw);
+      const totalCount = (cart.items || []).reduce((acc: number, item: any) => acc + item.quantity, 0);
+
+      if (totalCount > 0) {
+        badge.textContent = totalCount > 99 ? '99+' : totalCount.toString();
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  updateCartBadge();
+  window.addEventListener('shoppie-cart-updated', updateCartBadge);
+</script>

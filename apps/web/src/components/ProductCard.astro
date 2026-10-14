@@ -1,0 +1,97 @@
+---
+import type { Product } from '@shoppie/shared';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const effectivePrice = product.salePrice ?? product.basePrice;
+const hasDiscount = product.salePrice && product.salePrice < product.basePrice;
+const discountPercent = hasDiscount
+  ? Math.round(((product.basePrice - product.salePrice!) / product.basePrice) * 100)
+  : 0;
+
+const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= product.lowStockThreshold;
+---
+
+<div class="product-card group relative bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden" data-product-json={JSON.stringify(product)}>
+  
+  <!-- Image Container -->
+  <div class="relative w-full h-48 bg-slate-100 overflow-hidden">
+    <a href={`/products/${product.slug}`} class="block w-full h-full">
+      <img 
+        src={product.images[0] || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'} 
+        alt={product.name}
+        loading="lazy"
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    </a>
+
+    <!-- Discount Badge -->
+    {hasDiscount && (
+      <span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shadow-sm">
+        {discountPercent}% OFF
+      </span>
+    )}
+
+    <!-- Category Tag -->
+    <span class="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-xs text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-slate-200">
+      {product.categoryName || 'General'}
+    </span>
+  </div>
+
+  <!-- Content Container -->
+  <div class="p-4 flex-1 flex flex-col">
+    <!-- Merchant Link -->
+    <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+      <span class="font-medium truncate">{product.merchantName || 'Local Merchant'}</span>
+      <span class="text-amber-500 font-semibold flex items-center gap-0.5">
+        ★ {product.rating || '4.8'}
+      </span>
+    </div>
+
+    <!-- Product Title -->
+    <h3 class="text-sm font-bold text-slate-900 group-hover:text-brand-600 transition line-clamp-2 leading-snug mb-1">
+      <a href={`/products/${product.slug}`}>{product.name}</a>
+    </h3>
+
+    <!-- Unit / Weight -->
+    <div class="text-[11px] text-slate-400 mb-3 font-medium">
+      {product.unit}
+    </div>
+
+    <!-- Stock Notice if Low -->
+    {isLowStock && (
+      <div class="text-[10px] text-amber-700 bg-amber-50 rounded px-1.5 py-0.5 mb-2 font-medium inline-block">
+        ⚡ Only {product.stockQuantity} left in stock
+      </div>
+    )}
+
+    <!-- Price & Add Button -->
+    <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+      <div>
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-base font-extrabold text-slate-900">₹{effectivePrice}</span>
+          {hasDiscount && (
+            <span class="text-xs text-slate-400 line-through">₹{product.basePrice}</span>
+          )}
+        </div>
+      </div>
+
+      <button 
+        type="button"
+        class="add-to-cart-btn inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 text-brand-600 font-bold text-xs hover:bg-brand-600 hover:text-white transition active:scale-95 shadow-xs"
+        aria-label={`Add ${product.name} to cart`}
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>Add</span>
+      </button>
+    </div>
+
+  </div>
+
+</div>

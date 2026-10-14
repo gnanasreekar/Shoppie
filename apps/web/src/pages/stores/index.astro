@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StoreCard from '../../components/StoreCard.astro';
+import { DUMMY_STORES, DUMMY_MERCHANTS } from '@shoppie/shared';
+
+const query = Astro.url.searchParams.get('q')?.toLowerCase() || '';
+
+const stores = query
+  ? DUMMY_STORES.filter(
+      (s) =>
+        s.name.toLowerCase().includes(query) ||
+        s.city.toLowerCase().includes(query) ||
+        s.description?.toLowerCase().includes(query)
+    )
+  : DUMMY_STORES;
+---
+
+<BaseLayout title="Local Stores Directory | Shoppie Varni & Nizamabad">
+  <div class="space-y-8">
+    
+    <!-- Top Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Local Stores Directory</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Discover trusted retail merchants in Varni, Nizamabad, and surrounding areas</p>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <form method="GET" class="flex gap-2 max-w-sm w-full">
+        <input 
+          type="text" 
+          name="q" 
+          value={query}
+          placeholder="Search by store name or town..." 
+          class="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+        />
+        <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition">
+          Filter
+        </button>
+      </form>
+    </div>
+
+    {query && (
+      <div class="text-xs text-slate-600 flex items-center justify-between bg-orange-50 p-3 rounded-xl">
+        <span>Showing results for: <strong>"{query}"</strong> ({stores.length} found)</span>
+        <a href="/stores" class="text-brand-600 font-bold hover:underline">Clear search</a>
+      </div>
+    )}
+
+    <!-- Stores Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {stores.map((store) => {
+        const merchant = DUMMY_MERCHANTS.find((m) => m.id === store.merchantId);
+        return <StoreCard store={store} merchant={merchant} />;
+      })}
+    </div>
+
+    {stores.length === 0 && (
+      <div class="text-center py-16 bg-white rounded-2xl border border-slate-200">
+        <p class="text-slate-500 text-sm">No stores matched your query "{query}".</p>
+        <a href="/stores" class="mt-4 inline-block px-4 py-2 bg-brand-600 text-white text-xs font-bold rounded-xl">
+          View All Stores
+        </a>
+      </div>
+    )}
+
+  </div>
+</BaseLayout>

@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SUBSCRIPTION_PLANS } from '@shoppie/shared';
+---
+
+<BaseLayout title="Merchant SaaS Pricing & Plans | Shoppie">
+  <div class="space-y-12">
+    
+    <!-- Top Hero -->
+    <div class="text-center max-w-3xl mx-auto space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
+        <span>🏷️ Configurable Launch Model (Varni & Nizamabad Pilot)</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+        Simple, Transparent Merchant SaaS Pricing
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        Zero commission on orders during our Telangana pilot launch. Choose a predictable monthly software subscription that scales with your catalog and staff.
+      </p>
+    </div>
+
+    <!-- Pricing Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {SUBSCRIPTION_PLANS.map((plan) => (
+        <div class={`relative bg-white rounded-3xl border ${plan.isPopular ? 'border-brand-500 shadow-xl ring-2 ring-brand-500/20' : 'border-slate-200 shadow-xs'} p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl`}>
+          
+          {plan.isPopular && (
+            <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
+              Most Popular in Varni
+            </span>
+          )}
+
+          <div>
+            <div class="pb-4 border-b border-slate-100">
+              <h3 class="font-extrabold text-slate-900 text-base">{plan.name}</h3>
+              <div class="mt-3 flex items-baseline gap-1">
+                <span class="text-3xl font-black text-slate-900">
+                  {plan.monthlyPriceInr === 0 ? 'FREE' : `₹${plan.monthlyPriceInr}`}
+                </span>
+                {plan.monthlyPriceInr > 0 && (
+                  <span class="text-xs text-slate-400 font-medium">/ month</span>
+                )}
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">
+                {plan.monthlyPriceInr === 0 ? 'Forever free starter tier' : 'Billed monthly. Cancel anytime.'}
+              </p>
+            </div>
+
+            <div class="py-4 space-y-2.5 text-xs text-slate-600">
+              <div class="font-bold text-slate-900 text-[11px] uppercase tracking-wider">Plan Highlights:</div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand-600 font-bold">✓</span>
+                <span>Up to <strong>{plan.maxProducts === 999999 ? 'Unlimited' : plan.maxProducts}</strong> Products</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand-600 font-bold">✓</span>
+                <span><strong>{plan.maxOrdersPerMonth === 999999 ? 'Unlimited' : plan.maxOrdersPerMonth}</strong> Orders/month</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand-600 font-bold">✓</span>
+                <span><strong>{plan.aiQueriesPerMonth}</strong> AI Assistant Queries/mo</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-brand-600 font-bold">✓</span>
+                <span><strong>{plan.maxEmployees}</strong> Staff Accounts</span>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 space-y-2">
+                {plan.features.map((feat) => (
+                  <div class="flex items-start gap-2 text-[11px]">
+                    <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                    <span>{feat}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6">
+            <a 
+              href="/merchant"
+              class={`w-full py-2.5 px-4 rounded-xl text-center font-bold text-xs transition block ${plan.isPopular ? 'bg-brand-600 hover:bg-brand-700 text-white shadow-md' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}`}
+            >
+              {plan.monthlyPriceInr === 0 ? 'Get Started Free' : 'Choose Plan'}
+            </a>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+    <!-- Temporary Strategy & Configurable Notes -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+      <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-xl bg-orange-100 text-brand-600 flex items-center justify-center font-bold text-lg">
+          📋
+        </div>
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Founder Strategy: Launch Segments & Acquisition Playbook</h2>
+          <p class="text-xs text-slate-500">Configured as temporary defaults. You can modify these anytime via Platform Admin or DB.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-600 leading-relaxed">
+        
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+          <span class="font-bold text-slate-900 block text-sm">📍 Target Segment (Pilot)</span>
+          <p>
+            Kirana stores, mobile phone retailers, and organic farmers in <strong>Varni (503201)</strong> and <strong>Nizamabad (503001)</strong>. These merchants already have local foot traffic but lack mobile-ordering software.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+          <span class="font-bold text-slate-900 block text-sm">🤝 Merchant Acquisition</span>
+          <p>
+            Zero friction onboarding: <strong>0% transaction commission</strong> and free digital storefront QR stickers for the first 50 pilot merchants. Hands-on onboarding via field visits in Varni town.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+          <span class="font-bold text-slate-900 block text-sm">💰 Revenue Scaling</span>
+          <p>
+            Transition to SaaS subscriptions (₹499/mo) after 60-day free trial, plus value-added AI business analytics, Khata WhatsApp reminders, and sponsored marketplace placements.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</BaseLayout>

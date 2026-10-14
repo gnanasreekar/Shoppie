@@ -1,0 +1,231 @@
+---
+---
+
+<div id="ai-modal-container" class="hidden fixed inset-0 z-50 overflow-hidden">
+  <div id="ai-modal-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-xs"></div>
+
+  <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+    <div class="w-screen max-w-lg bg-white shadow-2xl flex flex-col">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-violet-600 via-indigo-600 to-brand-600 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold leading-tight">Shoppie AI Assistant</h3>
+            <p class="text-[11px] text-violet-200">OpenAI-Compatible & Local Budget Aware</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <a href="/ai-assistant" title="Full Screen & Model Settings" class="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition text-xs">
+            ⚙️ Settings
+          </a>
+          <button id="close-ai-modal" class="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Context Toggle -->
+      <div class="px-4 py-2 bg-slate-100 border-b border-slate-200 flex items-center justify-between text-xs">
+        <span class="text-slate-500 font-medium">Assistant Mode:</span>
+        <div class="flex bg-white rounded-lg p-0.5 border border-slate-200 shadow-2xs">
+          <button id="ai-mode-shopper" class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-brand-600 text-white transition">Customer</button>
+          <button id="ai-mode-merchant" class="px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-900 transition">Merchant Copilot</button>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 text-xs">
+        <div class="flex items-start gap-2.5">
+          <div class="w-7 h-7 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+            AI
+          </div>
+          <div class="bg-white p-3 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 max-w-[85%] text-slate-700 leading-relaxed">
+            Namaste! I am your AI assistant for Varni & Nizamabad. Ask me anything about deals, store hours, or inventory restock!
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested Prompt Pills -->
+      <div class="px-4 py-2 bg-white border-t border-slate-100 flex gap-2 overflow-x-auto no-scrollbar">
+        <button class="ai-quick-prompt shrink-0 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-brand-600 text-slate-600 text-[11px] font-medium transition" data-prompt="Find boAt headphones under ₹1500 in Nizamabad">
+          🎧 boAt headphones &lt; ₹1500
+        </button>
+        <button class="ai-quick-prompt shrink-0 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-brand-600 text-slate-600 text-[11px] font-medium transition" data-prompt="Best price on Aashirvaad Atta in Varni">
+          🛒 Aashirvaad Atta price
+        </button>
+        <button class="ai-quick-prompt shrink-0 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-orange-50 hover:text-brand-600 text-slate-600 text-[11px] font-medium transition" data-prompt="What are today's fresh vegetables from Varni farms?">
+          🥦 Fresh veggies today
+        </button>
+      </div>
+
+      <!-- Input Field -->
+      <div class="p-3 bg-white border-t border-slate-200">
+        <form id="ai-chat-form" class="flex gap-2">
+          <input 
+            id="ai-chat-input"
+            type="text" 
+            placeholder="Type your message in English or Telugu..." 
+            class="flex-1 bg-slate-100 border-none rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-2 focus:ring-violet-500 transition"
+          />
+          <button 
+            type="submit"
+            class="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs rounded-xl hover:from-violet-700 hover:to-indigo-700 transition shadow-xs flex items-center justify-center shrink-0"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  import { sendAIChatMessage, type AIMessage } from '../lib/ai-client';
+
+  const modalContainer = document.getElementById('ai-modal-container');
+  const backdrop = document.getElementById('ai-modal-backdrop');
+  const closeBtn = document.getElementById('close-ai-modal');
+  const chatMessages = document.getElementById('ai-chat-messages');
+  const chatForm = document.getElementById('ai-chat-form');
+  const chatInput = document.getElementById('ai-chat-input') as HTMLInputElement;
+
+  const modeShopper = document.getElementById('ai-mode-shopper');
+  const modeMerchant = document.getElementById('ai-mode-merchant');
+  let currentRole: 'customer' | 'merchant' = 'customer';
+
+  const conversation: AIMessage[] = [
+    {
+      id: 'welcome',
+      role: 'assistant',
+      content: 'Namaste! I am your AI assistant for Varni & Nizamabad. Ask me anything about deals, store hours, or inventory restock!',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    },
+  ];
+
+  function openAIModal() {
+    modalContainer?.classList.remove('hidden');
+    chatInput?.focus();
+  }
+
+  function closeAIModal() {
+    modalContainer?.classList.add('hidden');
+  }
+
+  closeBtn?.addEventListener('click', closeAIModal);
+  backdrop?.addEventListener('click', closeAIModal);
+
+  modeShopper?.addEventListener('click', () => {
+    currentRole = 'customer';
+    modeShopper.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold bg-brand-600 text-white transition';
+    modeMerchant!.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-900 transition';
+  });
+
+  modeMerchant?.addEventListener('click', () => {
+    currentRole = 'merchant';
+    modeMerchant!.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold bg-violet-600 text-white transition';
+    modeShopper!.className = 'px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-600 hover:text-slate-900 transition';
+  });
+
+  document.querySelectorAll('.ai-quick-prompt').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const prompt = (e.currentTarget as HTMLElement).getAttribute('data-prompt');
+      if (prompt && chatInput) {
+        chatInput.value = prompt;
+        chatForm?.dispatchEvent(new Event('submit'));
+      }
+    });
+  });
+
+  async function handleSend() {
+    if (!chatInput || !chatInput.value.trim()) return;
+    const text = chatInput.value.trim();
+    chatInput.value = '';
+
+    const userMsg: AIMessage = {
+      id: `usr_${Date.now()}`,
+      role: 'user',
+      content: text,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+    conversation.push(userMsg);
+    appendMessage(userMsg);
+
+    // Show loading typing indicator
+    const typingId = `typing_${Date.now()}`;
+    appendTyping(typingId);
+
+    try {
+      const response = await sendAIChatMessage(conversation, currentRole);
+      removeTyping(typingId);
+      conversation.push(response);
+      appendMessage(response);
+    } catch {
+      removeTyping(typingId);
+      const errMsg: AIMessage = {
+        id: `err_${Date.now()}`,
+        role: 'assistant',
+        content: 'Sorry, I encountered a temporary network delay. Please try again.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      appendMessage(errMsg);
+    }
+  }
+
+  function appendMessage(msg: AIMessage) {
+    if (!chatMessages) return;
+    const isUser = msg.role === 'user';
+    const div = document.createElement('div');
+    div.className = `flex items-start gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`;
+    
+    div.innerHTML = `
+      <div class="w-7 h-7 rounded-full ${isUser ? 'bg-slate-800' : 'bg-violet-600'} text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+        ${isUser ? 'YOU' : 'AI'}
+      </div>
+      <div class="${isUser ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 border border-slate-200/80'} p-3 rounded-2xl ${isUser ? 'rounded-tr-xs' : 'rounded-tl-xs'} shadow-xs max-w-[85%] leading-relaxed">
+        <p>${msg.content.replace(/\n/g, '<br/>')}</p>
+        <span class="block text-[9px] ${isUser ? 'text-slate-400' : 'text-slate-400'} mt-1 text-right">${msg.timestamp}</span>
+      </div>
+    `;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function appendTyping(id: string) {
+    if (!chatMessages) return;
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = 'flex items-start gap-2.5';
+    div.innerHTML = `
+      <div class="w-7 h-7 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">AI</div>
+      <div class="bg-white p-3 rounded-2xl rounded-tl-xs shadow-xs border border-slate-200/80 text-slate-400 text-xs flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce"></span>
+        <span class="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
+        <span class="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+      </div>
+    `;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function removeTyping(id: string) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  chatForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleSend();
+  });
+</script>

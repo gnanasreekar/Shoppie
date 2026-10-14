@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { DUMMY_PRODUCTS, DUMMY_STORES, DUMMY_MERCHANTS, type Product } from '@shoppie/shared';
+
+export function getStaticPaths() {
+  return DUMMY_PRODUCTS.map((product) => {
+    const store = DUMMY_STORES.find((s) => s.id === product.storeId);
+    const merchant = DUMMY_MERCHANTS.find((m) => m.id === product.merchantId);
+    const related = DUMMY_PRODUCTS.filter((p) => p.id !== product.id && p.categoryId === product.categoryId);
+    return {
+      params: { slug: product.slug },
+      props: { product, store, merchant, related },
+    };
+  });
+}
+
+interface Props {
+  product: Product;
+  store?: any;
+  merchant?: any;
+  related: Product[];
+}
+
+const { product, store, merchant, related } = Astro.props;
+const effectivePrice = product.salePrice ?? product.basePrice;
+const hasDiscount = product.salePrice && product.salePrice < product.basePrice;
+const savings = hasDiscount ? product.basePrice - product.salePrice! : 0;
+---
+
+<BaseLayout title={`${product.name} | Buy Locally on Shoppie`}>
+  <div class="space-y-12">
+    
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+      <a href="/" class="hover:text-brand-600 transition">Home</a>
+      <span>/</span>
+      <a href={`/?category=${product.categoryId}`} class="hover:text-brand-600 transition">{product.categoryName}</a>
+      <span>/</span>
+      <span class="text-slate-900 truncate max-w-xs">{product.name}</span>
+    </nav>
+
+    <!-- Main Product Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+      
+      <!-- Left: Image Showcase -->
+      <div class="space-y-4">
+        <div class="w-full h-80 sm:h-96 rounded-2xl bg-slate-100 overflow-hidden border border-slate-100 shadow-inner">
+          <img 
+            id="main-product-img"
+            src={product.images[0]} 
+            alt={product.name} 
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        {product.images.length > 1 && (
+          <div class="flex gap-3 overflow-x-auto no-scrollbar">
+            {product.images.map((img, idx) => (
+              <button 
+                class="w-16 h-16 rounded-xl border-2 border-slate-200 hover:border-brand-500 overflow-hidden shrink-0 transition"
+                onclick={`document.getElementById('main-product-img').src = '${img}'`}
+              >
+                <img src={img} alt={`thumb ${idx}`} class="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Right: Product Purchase Details -->
+      <div class="flex flex-col justify-between space-y-6">
+        <div>
+          <!-- Merchant tag -->
+          {store && (
+            <a 
+              href={`/stores/${store.slug}`}
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-brand-700 text-xs font-bold hover:bg-orange-100 transition mb-3"
+            >
+              <span>🏬 Sold by {store.name}</span>
+              <span>&rarr;</span>
+            </a>
+          )}
+
+          <h1 class="text-xl sm:text-3xl font-black text-slate-900 leading-tight mb-2">
+            {product.name}
+          </h1>
+
+          <div class="flex items-center gap-3 text-xs text-slate-500 mb-4">
+            <span class="bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded flex items-center gap-1">
+              ★ {product.rating || '4.8'}
+            </span>
+            <span>({product.reviewCount || 45} customer reviews)</span>
+            <span>•</span>
+            <span class="font-semibold text-slate-700">SKU: {product.sku}</span>
+          </div>
+
+          <!-- Price Box -->
+          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-6 space-y-1">
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-black text-slate-900">₹{effectivePrice}</span>
+              {hasDiscount && (
+                <span class="text-base text-slate-400 line-through">₹{product.basePrice}</span>
+              )}
+              {hasDiscount && (
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  Save ₹{savings}
+                </span>
+              )}
+            </div>
+            <div class="text-xs text-slate-500 font-medium">
+              Inclusive of all taxes. Unit: <strong class="text-slate-800">{product.unit}</strong>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="space-y-2 mb-6 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-wider">Product Highlights</h4>
+            <p>{product.description}</p>
+          </div>
+
+          <!-- Local Delivery Guarantee -->
+          <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-800 flex items-start gap-2.5 mb-6">
+            <svg class="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <div>
+              <span class="font-bold">Hyperlocal Delivery Available in Varni & Nizamabad</span>
+              <p class="text-[11px] text-emerald-700 mt-0.5">Dispatched directly from merchant shop. Free delivery on orders above ₹499.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add to Cart Action -->
+        <div class="pt-4 border-t border-slate-100 flex items-center gap-4">
+          <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1">
+            <button id="pdp-dec" class="p-2 text-slate-500 hover:text-slate-900"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg></button>
+            <span id="pdp-qty" class="w-8 text-center text-sm font-bold text-slate-900">1</span>
+            <button id="pdp-inc" class="p-2 text-slate-500 hover:text-slate-900"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></button>
+          </div>
+
+          <button 
+            id="pdp-add-btn"
+            class="flex-1 py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span>Add to Basket</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Related Products -->
+    {related.length > 0 && (
+      <div class="space-y-4">
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">Related Local Items</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {related.map((item) => (
+            <ProductCard product={item} />
+          ))}
+        </div>
+      </div>
+    )}
+
+  </div>
+</BaseLayout>
+
+<script define:vars={{ product }}>
+  import { addToCart } from '../../lib/cart';
+
+  let qty = 1;
+  const qtyEl = document.getElementById('pdp-qty');
+  const incBtn = document.getElementById('pdp-inc');
+  const decBtn = document.getElementById('pdp-dec');
+  const addBtn = document.getElementById('pdp-add-btn');
+
+  incBtn?.addEventListener('click', () => {
+    qty++;
+    if (qtyEl) qtyEl.textContent = qty.toString();
+  });
+
+  decBtn?.addEventListener('click', () => {
+    if (qty > 1) {
+      qty--;
+      if (qtyEl) qtyEl.textContent = qty.toString();
+    }
+  });
+
+  addBtn?.addEventListener('click', () => {
+    const res = addToCart(product, qty);
+    if (!res.success) {
+      alert(res.message);
+    } else {
+      const drawer = document.getElementById('cart-drawer-container');
+      drawer?.classList.remove('hidden');
+    }
+  });
+</script>

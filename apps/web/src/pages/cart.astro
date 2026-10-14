@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Checkout & Cart | Shoppie Local Commerce">
+  <div class="max-w-4xl mx-auto space-y-8">
+    
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Review & Checkout</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">Direct local delivery to your home in Varni & Nizamabad</p>
+    </div>
+
+    <!-- Active Cart Content -->
+    <div id="checkout-layout" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Left: Delivery Address & Payment Method -->
+      <div class="md:col-span-2 space-y-6">
+        
+        <!-- Delivery Address Box -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-xs">1</span>
+              <span>Delivery Details</span>
+            </h3>
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full">Telangana Hyperlocal</span>
+          </div>
+
+          <form id="delivery-form" class="space-y-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-medium text-slate-700 mb-1">Your Full Name</label>
+                <input type="text" id="cust-name" value="Priya Sharma" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-brand-500" />
+              </div>
+              <div>
+                <label class="block font-medium text-slate-700 mb-1">Mobile Number (for WhatsApp order status)</label>
+                <input type="tel" id="cust-phone" value="+91 98480 12345" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-brand-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-medium text-slate-700 mb-1">House / Flat / Shop No. & Street</label>
+              <input type="text" id="cust-street" value="H.No 4-56, Main Bazaar Road, Near Hanuman Temple" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-brand-500" />
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-medium text-slate-700 mb-1">Town / City</label>
+                <select id="cust-city" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium">
+                  <option value="Varni" selected>Varni</option>
+                  <option value="Nizamabad">Nizamabad</option>
+                  <option value="Bodhan">Bodhan</option>
+                  <option value="Armoor">Armoor</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-700 mb-1">Pincode</label>
+                <input type="text" id="cust-pincode" value="503201" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:bg-white focus:ring-2 focus:ring-brand-500 font-mono font-bold" />
+              </div>
+              <div class="col-span-2 sm:col-span-1">
+                <label class="block font-medium text-slate-700 mb-1">State</label>
+                <input type="text" value="Telangana" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-slate-500 font-semibold cursor-not-allowed" />
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Payment Method Box -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-xs">2</span>
+            <span>Select Payment Method</span>
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-brand-500 bg-orange-50/50 cursor-pointer">
+              <input type="radio" name="payment-method" value="COD" checked class="mt-0.5 text-brand-600 focus:ring-brand-500" />
+              <div>
+                <strong class="block text-slate-900 font-bold">Cash on Delivery (COD)</strong>
+                <span class="text-slate-500 text-[11px]">Pay cash directly to the delivery person upon receiving your goods.</span>
+              </div>
+            </label>
+
+            <label class="flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white cursor-pointer">
+              <input type="radio" name="payment-method" value="UPI" class="mt-0.5 text-brand-600 focus:ring-brand-500" />
+              <div>
+                <strong class="block text-slate-900 font-bold">UPI / QR Code</strong>
+                <span class="text-slate-500 text-[11px]">Google Pay, PhonePe, Paytm directly to merchant's VPA.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Order Summary Card -->
+      <div class="space-y-4">
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4 sticky top-24">
+          <h3 class="text-sm font-bold text-slate-900 pb-3 border-b border-slate-100">Order Summary</h3>
+
+          <div id="checkout-merchant-pill" class="text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-600">
+            Fulfilling Store: <strong id="checkout-merchant-name" class="text-slate-900 font-bold">Patel Kirana</strong>
+          </div>
+
+          <div id="checkout-items-preview" class="space-y-2 text-xs max-h-48 overflow-y-auto no-scrollbar">
+            <!-- Injected via client script -->
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+            <div class="flex justify-between">
+              <span>Subtotal</span>
+              <span id="checkout-subtotal" class="font-bold text-slate-900">₹0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Delivery Fee</span>
+              <span id="checkout-delivery" class="font-bold text-slate-900">₹0</span>
+            </div>
+            <div class="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-100">
+              <span>Total</span>
+              <span id="checkout-total" class="text-brand-600">₹0</span>
+            </div>
+          </div>
+
+          <button 
+            id="place-order-btn"
+            class="w-full py-3.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition active:scale-[0.98] flex items-center justify-center gap-2"
+          >
+            <span>Place Order</span>
+            <span>&rarr;</span>
+          </button>
+
+          <p class="text-[11px] text-slate-400 text-center">
+            🔒 Safe & verified local commerce. Zero advance commission charges.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Order Success State (Hidden by default) -->
+    <div id="order-success-box" class="hidden bg-white rounded-3xl border border-emerald-200 p-8 sm:p-12 text-center shadow-lg space-y-6">
+      <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
+        ✓
+      </div>
+      <div class="max-w-md mx-auto space-y-2">
+        <h2 class="text-2xl font-black text-slate-900">Order Placed Successfully!</h2>
+        <p class="text-xs sm:text-sm text-slate-600">
+          Your order <strong id="success-order-num" class="text-slate-900 font-mono">SHP-2026-9921</strong> has been received by <span id="success-store-name" class="font-bold text-brand-600">Patel Kirana</span>.
+        </p>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-sm mx-auto text-xs text-left space-y-2 text-slate-600">
+        <div class="flex justify-between font-medium">
+          <span>Estimated Delivery:</span>
+          <strong class="text-slate-900">Within 45-60 minutes</strong>
+        </div>
+        <div class="flex justify-between font-medium">
+          <span>Payment:</span>
+          <strong id="success-payment-type" class="text-slate-900">Cash on Delivery (COD)</strong>
+        </div>
+        <div class="flex justify-between font-bold text-slate-900 border-t border-slate-200 pt-2">
+          <span>Amount Payable:</span>
+          <span id="success-amount" class="text-brand-600">₹0</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <a href="/" class="px-6 py-2.5 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700 transition">
+          Continue Shopping
+        </a>
+        <a href="/merchant" class="px-6 py-2.5 bg-slate-100 text-slate-800 font-bold text-xs rounded-xl hover:bg-slate-200 transition">
+          Switch to Merchant View
+        </a>
+      </div>
+    </div>
+
+  </div>
+</BaseLayout>
+
+<script>
+  import { getCart, clearCart } from '../lib/cart';
+
+  const checkoutLayout = document.getElementById('checkout-layout');
+  const successBox = document.getElementById('order-success-box');
+  const itemsContainer = document.getElementById('checkout-items-preview');
+  const storeNameEl = document.getElementById('checkout-merchant-name');
+  const subtotalEl = document.getElementById('checkout-subtotal');
+  const deliveryEl = document.getElementById('checkout-delivery');
+  const totalEl = document.getElementById('checkout-total');
+  const placeBtn = document.getElementById('place-order-btn');
+
+  function initCheckout() {
+    const cart = getCart();
+    if (!cart.items || cart.items.length === 0) {
+      if (itemsContainer) {
+        itemsContainer.innerHTML = '<p class="text-slate-400 italic">No items in cart.</p>';
+      }
+      return;
+    }
+
+    if (storeNameEl) storeNameEl.textContent = cart.merchantName || 'Local Merchant';
+    if (subtotalEl) subtotalEl.textContent = `₹${cart.subtotal}`;
+    if (deliveryEl) deliveryEl.textContent = cart.deliveryFee === 0 ? 'FREE' : `₹${cart.deliveryFee}`;
+    if (totalEl) totalEl.textContent = `₹${cart.total}`;
+
+    if (itemsContainer) {
+      itemsContainer.innerHTML = cart.items
+        .map(
+          (item) => `
+        <div class="flex justify-between items-center py-1">
+          <span class="truncate max-w-[180px]">${item.quantity}x ${item.productName}</span>
+          <span class="font-bold text-slate-900 shrink-0">₹${item.itemTotal}</span>
+        </div>
+      `
+        )
+        .join('');
+    }
+  }
+
+  initCheckout();
+
+  placeBtn?.addEventListener('click', () => {
+    const cart = getCart();
+    if (!cart.items || cart.items.length === 0) {
+      alert('Your cart is empty! Please add items from a store first.');
+      window.location.href = '/';
+      return;
+    }
+
+    const orderNum = `SHP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const paymentRadio = document.querySelector('input[name="payment-method"]:checked') as HTMLInputElement;
+    const paymentMethod = paymentRadio?.value || 'COD';
+
+    // Populate success UI
+    document.getElementById('success-order-num')!.textContent = orderNum;
+    document.getElementById('success-store-name')!.textContent = cart.merchantName || 'Local Merchant';
+    document.getElementById('success-payment-type')!.textContent = paymentMethod === 'COD' ? 'Cash on Delivery' : 'UPI QR';
+    document.getElementById('success-amount')!.textContent = `₹${cart.total}`;
+
+    // Clear cart and switch screen
+    clearCart();
+    checkoutLayout?.classList.add('hidden');
+    successBox?.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
